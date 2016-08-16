@@ -15,6 +15,7 @@ function! SyntaxCheckers_groovy_codenarc_GetLocList() dict
 
 		let errorformat = '%P%.%#File:\ %f,%.%#Violation%.%#Line=%l%.%#Msg=[%m'
 		"let errorformat = '%m'
+		echom "Running gradle codenarc..."
 		return SyntasticMake({ 'makeprg': makeprg, 'errorformat': errorformat })
 
     endif
@@ -37,6 +38,7 @@ function! SyntaxCheckers_groovy_gradlebuild_GetLocList() dict
 					\ })
 		let errorformat = '%f:\ %l:\ %m@\ line %.%#\,\ column %c%.%#'
 		"let errorformat = '%m'
+		echom "Running gradle build..."
 		return SyntasticMake({ 'makeprg': makeprg, 'errorformat': errorformat })
 
     endif
@@ -46,21 +48,3 @@ call g:SyntasticRegistry.CreateAndRegisterChecker({
     \ 'filetype': 'groovy',
     \ 'name': 'gradlebuild',
 	\ 'exec': 'pwd'})
-
-
-function! FindGradleRoot()
-	let root = expand('%:p')
-	let previous = ""
-
-	while root !=# previous
-
-		let path = globpath(root, '*.gradle', 1)
-		if path == ''
-		else
-			return fnamemodify(path, ':h')
-		endif
-		let previous = root
-		let root = fnamemodify(root, ':h')
-	endwhile
-	return ''
-endfunction
