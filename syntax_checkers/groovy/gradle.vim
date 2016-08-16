@@ -1,5 +1,5 @@
 
-let g:vim_gradle_source_dir=expand("<sfile>:h:h")
+let g:vim_gradle_source_dir=expand("<sfile>:h:h:h")
 
 function! SyntaxCheckers_groovy_codenarc_GetLocList() dict
     let root = FindGradleRoot()
@@ -20,26 +20,27 @@ function! SyntaxCheckers_groovy_codenarc_GetLocList() dict
     endif
 endfunction
 
+call g:SyntasticRegistry.CreateAndRegisterChecker({
+    \ 'filetype': 'groovy',
+    \ 'name': 'codenarc',
+	\ 'exec': 'pwd'})
+
+
 function! SyntaxCheckers_groovy_gradlebuild_GetLocList() dict
     let root = FindGradleRoot()
     if empty(root)
     else
 		let makeprg = self.makeprgBuild({
-					\'exe': 'cd ' . root . ';gradle build;',
+					\'exe': 'cd ' . root . ';gradle build;echo ',
 					\'filetype': 'groovy',
 					\'subchecker': 'gradlebuild'
 					\ })
-		let errorformat = '%f:\ %l:\ %m@\ line %.%#,\ column %c%.%#'
+		let errorformat = '%f:\ %l:\ %m@\ line %.%#\,\ column %c%.%#'
 		"let errorformat = '%m'
 		return SyntasticMake({ 'makeprg': makeprg, 'errorformat': errorformat })
 
     endif
 endfunction
-
-call g:SyntasticRegistry.CreateAndRegisterChecker({
-    \ 'filetype': 'groovy',
-    \ 'name': 'codenarc',
-	\ 'exec': 'pwd'})
 
 call g:SyntasticRegistry.CreateAndRegisterChecker({
     \ 'filetype': 'groovy',
